@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TechOilFrontEnd.Controllers
 {
@@ -8,5 +9,12 @@ namespace TechOilFrontEnd.Controllers
         {
             return View();
         }
+
+        public IActionResult Ingresar(LoginDTO login)
+        {
+            return View("~/Views/Home/Index.cshtml");
+        }
+
+
     }
 }
