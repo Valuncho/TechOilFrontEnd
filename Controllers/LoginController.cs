@@ -1,7 +1,9 @@
 ﻿using Data.Base;
 using Data.DTOs;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace TechOilFrontEnd.Controllers
@@ -24,8 +26,9 @@ namespace TechOilFrontEnd.Controllers
             var token = await baseApi.PostToApi("Login", login);
             var resultadoLogin = token as OkObjectResult;
             var resultadoObjeto = JsonConvert.DeserializeObject<Models.Login>(resultadoLogin.Value.ToString());
-            ViewBag.Nombre = resultadoObjeto.FirstName;
-            ViewBag.Apellido = resultadoObjeto.LastName;
+
+            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
+
 
 
             return View("~/Views/Home/Index.cshtml", resultadoObjeto);

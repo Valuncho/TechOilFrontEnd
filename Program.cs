@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 namespace TechOilFrontEnd
 {
     public class Program
@@ -14,6 +16,27 @@ namespace TechOilFrontEnd
                 config.BaseAddress = new Uri(builder.Configuration["ServiceUrl:ApiUrl"]);
             });
 
+            builder.Services.AddAuthentication(option =>
+            {
+                option.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                option.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
+            {
+                config.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.Redirect("https://localhost:7287/");
+                    return Task.CompletedTask;
+                };
+            });
+
+            builder.Services.AddAuthorization(option =>
+            {
+                option.AddPolicy("Administrador", policy =>
+                {
+                    policy.RequireRole("1");
+                });
+            });
 
             var app = builder.Build();
 
@@ -30,6 +53,7 @@ namespace TechOilFrontEnd
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
